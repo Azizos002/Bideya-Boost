@@ -1,33 +1,19 @@
-const express = require('express')
-const cors = require('cors')
-const mongoose = require('mongoose')
+const express = require("express");
+const connectDB = require("./src/config/db");
+const authRoutes = require("./src/routes/route");
 
 require('dotenv').config();
 
-const app = express()
-
-const port = process.env.PORT
-const dataBase = process.env.DATABASE_URI
-
-//Connect to DATABASE
-mongoose
-    .connect(dataBase)
-    .then(() => {
-        console.log('mongoDB Connected...');
-    })
-    .catch((err) => {
-        console.error('Error Connecting  to MongoDB : ', err)
-    })
-
-// Middleware
-app.use(cors());
+const app = express();
 app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.send('Bideya Boost is HEREEE!');
+connectDB();
+
+app.use("/api/auth", authRoutes);
+
+app.get("/", (req, res) => {
+  res.send("Welcome to Bideya Boost <3");
 });
 
-// Start the server
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-});
+const PORT = process.env.PORT;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
